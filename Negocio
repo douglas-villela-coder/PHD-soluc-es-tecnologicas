@@ -1,0 +1,137 @@
+package trabalho;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+// Exceção Customizada para regras de portfólio da PhD
+class ProdutoInvalidoException extends Exception {
+    public ProdutoInvalidoException(String mensagem) {
+        super(mensagem);
+    }
+}
+
+// Classe Entidade com Encapsulamento Rígido
+class Produto {
+    private int id;
+    private String nome;
+    private String marca;
+    private String categoria;
+    private double preco;
+    private int quantidadeEstoque;
+
+    public Produto(int id, String nome, String marca, String categoria, double preco, int quantidadeEstoque) {
+        this.id = id;
+        this.nome = nome;
+        this.marca = marca;
+        this.categoria = categoria;
+        this.preco = preco;
+        this.quantidadeEstoque = quantidadeEstoque;
+    }
+
+    public int getId() { return id; }
+    public String getNome() { return nome; }
+    public String getMarca() { return marca; }
+    public String getCategoria() { return categoria; }
+    public double getPreco() { return preco; }
+    public int getQuantidadeEstoque() { return quantidadeEstoque; }
+    
+    public void setQuantidadeEstoque(int quantidadeEstoque) { 
+        this.quantidadeEstoque = quantidadeEstoque; 
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s] ID: %d | %s (%s) - R$ %.2f | Estoque: %d", categoria, id, nome, marca, preco, quantidadeEstoque);
+    }
+}
+
+// Agregação: Gerencia listas de compras locais de forma isolada
+class Carrinho {
+    private final List<Produto> itens = new ArrayList<>();
+
+    public void adicionarProduto(Produto produto) { itens.add(produto); }
+    public void removerProduto(Produto produto) { itens.remove(produto); }
+    public void limparCarrinho() { itens.clear(); }
+    public List<Produto> getItens() { return itens; }
+    
+    public double calcularTotal() { 
+        return itens.stream().mapToDouble(Produto::getPreco).sum(); 
+    }
+
+    public void listarItens() {
+        if (itens.isEmpty()) {
+            System.out.println("Carrinho vazio!");
+        } else {
+            itens.forEach(System.out::println);
+        }
+    }
+}
+
+// Representa a Nota de Compra fechada
+class Pedido {
+    private int numeroPedido;
+    private Cliente cliente;
+    private Carrinho carrinho;
+    private double valorTotal;
+    private final List<Produto> produtosComprados;
+
+    public Pedido(int numeroPedido, Cliente cliente, Carrinho carrinho) {
+        this.numeroPedido = numeroPedido;
+        this.cliente = cliente;
+        this.carrinho = carrinho;
+        this.valorTotal = carrinho.calcularTotal();
+        this.produtosComprados = new ArrayList<>(carrinho.getItens());
+    }
+
+    public void exibirPedido() {
+        System.out.println("Pedido: " + numeroPedido + " | Cliente: " + cliente.getNome() + " | Total: R$ " + valorTotal);
+        System.out.println("  Itens Processados:");
+        produtosComprados.forEach(p -> System.out.println("    -> " + p.getNome()));
+    }
+}
+
+// Catálogo com validações de nicho de mercado (Coleções Privadas)
+class Catalogo {
+    private final List<Produto> produtos = new ArrayList<>();
+    private final List<String> escopoValido = List.of("celular", "tablet", "computador", "som", "ia");
+
+    public void adicionarProduto(Produto produto) throws ProdutoInvalidoException {
+        if (!escopoValido.contains(produto.getCategoria().toLowerCase())) {
+            throw new ProdutoInvalidoException("exception, a empresa não trabalha com esse produto");
+        }
+        produtos.add(produto);
+    }
+
+    public Produto buscarPorId(int id) {
+        return produtos.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
+    }
+
+    public boolean removerProduto(int id) {
+        return produtos.removeIf(p -> p.getId() == id);
+    }
+
+    public void listarProdutos() {
+        if (produtos.isEmpty()) System.out.println("Nenhum produto cadastrado!");
+        else produtos.forEach(System.out::println);
+    }
+}
+
+// Fila sequencial de controle de saídas logísticas
+class Pedidos {
+    private final Queue<Pedido> filaPedidos = new LinkedList<>();
+
+    public void adicionarPedido(Pedido pedido) {
+        filaPedidos.add(pedido);
+        System.out.println("Pedido adicionado à fila!");
+    }
+
+    public void processarPedido() {
+        if (filaPedidos.isEmpty()) {
+            System.out.println("Nenhum pedido na fila!");
+        } else {
+            System.out.println("Processando pedido de faturamento:");
+            filaPedidos.poll().exibirPedido();
+        }
+    }
+}
