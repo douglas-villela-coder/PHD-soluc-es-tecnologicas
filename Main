@@ -1,0 +1,104 @@
+package trabalho;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Catalogo catalogo = new Catalogo();
+        Pedidos filaGeral = new Pedidos();
+        
+        // Setup Inicial de mercado da PhD Soluções Tecnologia
+        try {
+            catalogo.adicionarProduto(new Produto(101, "Galaxy S24 Ultra", "Samsung", "Celular", 7999.00, 15));
+            catalogo.adicionarProduto(new Produto(102, "iPad Pro M4", "Apple", "Tablet", 11200.00, 8));
+            catalogo.adicionarProduto(new Produto(103, "ThinkPad X1 Carbon", "Lenovo", "Computador", 13500.00, 5));
+            catalogo.adicionarProduto(new Produto(103, "ThinkPad X1 Carbon", "Lenovo", "Computador", 13500.00, 5));
+            catalogo.adicionarProduto(new Produto(104, "Monitor de Áudio Monitor XT", "Polk", "Som", 3200.00, 12));
+            catalogo.adicionarProduto(new Produto(105, "PhD CyberMind AI v2", "PhD Corp", "IA", 45000.00, 99));
+        } catch (ProdutoInvalidoException e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Criando Sessão de Usuário mockada para simulação
+        Cliente cliente = new Cliente("01", "xxx.xxx.xx9-00", "guestx@phd.com", 5501, true);
+        int numeroPedido = 9001;
+        int opcao;
+
+        do {
+            System.out.println("\n===== PhD Soluções Tecnologia =====");
+            System.out.println("Usuário Conectado: " + cliente.getNome() + (cliente.isVip() ? " [VIP]" : ""));
+            System.out.println("1 - Listar Catálogo Completo\n2 - Adicionar Item ao Carrinho\n3 - Exibir Meu Carrinho");
+            System.out.println("4 - Fechar Compra (Emitir Pedido)\n5 - Histórico de Compras\n6 - Cadastrar Item na Plataforma\n0 - Sair");
+            System.out.print("Opção: ");
+            opcao = sc.nextInt();
+            sc.nextLine();
+
+            switch (opcao) {
+                case 1 -> catalogo.listarProdutos();
+                
+                case 2 -> {
+                    System.out.print("Digite o ID do item/IA que quer comprar: ");
+                    Produto p = catalogo.buscarPorId(sc.nextInt());
+                    if (p != null && p.getQuantidadeEstoque() > 0) {
+                        cliente.getCarrinho().adicionarProduto(p);
+                        p.setQuantidadeEstoque(p.getQuantidadeEstoque() - 1); // Deduz estoque simulado
+                        System.out.println("Produto alocado no carrinho!");
+                    } else {
+                        System.out.println("Item indisponível ou inexistente.");
+                    }
+                }
+                
+                case 3 -> {
+                    System.out.println("--- Carrinho Atual ---");
+                    cliente.getCarrinho().listarItens();
+                    System.out.printf("Subtotal: R$ %.2f\n", cliente.getCarrinho().calcularTotal());
+                }
+                
+                case 4 -> {
+                    Carrinho c = cliente.getCarrinho();
+                    if (c.getItens().isEmpty()) {
+                        System.out.println("Nada para comprar ainda!");
+                    } else {
+                        Pedido novoPedido = new Pedido(numeroPedido++, cliente, c);
+                        cliente.adicionarAoHistorico(novoPedido);
+                        filaGeral.adicionarPedido(novoPedido);
+                        c.limparCarrinho(); // Esvazia o carrinho de compras atual
+                        System.out.println("Transação autorizada com sucesso!");
+                    }
+                }
+                
+                case 5 -> {
+                    System.out.println("--- Histórico de Compras na Plataforma ---");
+                    if (cliente.getHistorico().isEmpty()) {
+                        System.out.println("Nenhum registro encontrado.");
+                    } else {
+                        cliente.getHistorico().forEach(Pedido::exibirPedido);
+                    }
+                }
+
+                case 6 -> {
+                    System.out.print("ID: "); int id = sc.nextInt(); sc.nextLine();
+                    System.out.print("Nome do Modelo: "); String nome = sc.nextLine();
+                    System.out.print("Marca: "); String marca = sc.nextLine();
+                    System.out.print("Categoria (Celular/Tablet/Computador/Som/IA): "); String categoria = sc.nextLine();
+                    System.out.print("Preço: R$ "); double preco = sc.nextDouble();
+                    System.out.print("Quantidade em Estoque: "); int quantidadeEstoque = sc.nextInt();
+                    
+                    try {
+                        Produto novo = new Produto(id, nome, marca, categoria, preco, quantidadeEstoque);
+                        catalogo.adicionarProduto(novo);
+                        System.out.println("Novo item registrado globalmente com sucesso!");
+                    } catch (ProdutoInvalidoException e) {
+                        System.out.println(e.getMessage()); // Exibe: "exception, a empresa não trabalha com esse produto"
+                    }
+                }
+                
+                case 0 -> System.out.println("Conexão com a PhD encerrada de forma segura.");
+                default -> System.out.println("Opção inválida!");
+            }
+        } while (opcao != 0);
+
+        sc.close();
+    }
+}
