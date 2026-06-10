@@ -1,0 +1,48 @@
+package trabalho;
+import java.util.ArrayList;
+import java.util.List;
+
+// Abstração e Herança - Classe Base
+public abstract class Pessoa {
+    private String nome;
+    private String cpf;
+    private String email;
+
+    public Pessoa(String nome, String cpf, String email) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.email = email;
+    }
+
+    public String getNome() { return nome; }
+    public String getCpf() { return cpf; }
+    public String getEmail() { return email; }
+}
+
+// Subclasse Especializada com histórico e estado próprio de compras
+class Cliente extends Pessoa {
+    private int codigoCliente;
+    private boolean vip;
+    private final Carrinho carrinhoAtual = new Carrinho();
+    private final List<Pedido> historicoCompras = new ArrayList<>();
+
+    public Cliente(String nome, String cpf, String email, int codigoCliente, boolean vip) {
+        super(nome, cpf, email);
+        this.codigoCliente = codigoCliente;
+        this.vip = vip;
+    }
+
+    public int getCodigoCliente() { return codigoCliente; }
+    public boolean isVip() { return vip; }
+    public Carrinho getCarrinho() { return carrinhoAtual; }
+    public List<Pedido> getHistorico() { return historicoCompras; }
+    
+    public void adicionarAoHistorico(Pedido pedido) { 
+        this.historicoCompras.add(pedido); 
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente [codigo=" + codigoCliente + ", nome=" + getNome() + ", vip=" + vip + "]";
+    }
+}
