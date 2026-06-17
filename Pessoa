@@ -2,7 +2,7 @@ package trabalho;
 import java.util.ArrayList;
 import java.util.List;
 
-// Abstração e Herança - Classe Base
+
 public abstract class Pessoa {
     private String nome;
     private String cpf;
@@ -19,7 +19,7 @@ public abstract class Pessoa {
     public String getEmail() { return email; }
 }
 
-// Subclasse Especializada com histórico e estado próprio de compras
+
 class Cliente extends Pessoa {
     private int codigoCliente;
     private boolean vip;
