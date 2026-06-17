@@ -8,7 +8,7 @@ public class Main {
         Catalogo catalogo = new Catalogo();
         Pedidos filaGeral = new Pedidos();
         
-        // Setup Inicial de mercado da PhD Soluções Tecnologia
+       
         try {
             catalogo.adicionarProduto(new Produto(101, "Galaxy S24 Ultra", "Samsung", "Celular", 7999.00, 15));
             catalogo.adicionarProduto(new Produto(102, "iPad Pro M4", "Apple", "Tablet", 11200.00, 8));
@@ -20,7 +20,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        // Criando Sessão de Usuário mockada para simulação
+       
         Cliente cliente = new Cliente("01", "xxx.xxx.xx9-00", "guestx@phd.com", 5501, true);
         int numeroPedido = 9001;
         int opcao;
@@ -42,7 +42,7 @@ public class Main {
                     Produto p = catalogo.buscarPorId(sc.nextInt());
                     if (p != null && p.getQuantidadeEstoque() > 0) {
                         cliente.getCarrinho().adicionarProduto(p);
-                        p.setQuantidadeEstoque(p.getQuantidadeEstoque() - 1); // Deduz estoque simulado
+                        p.setQuantidadeEstoque(p.getQuantidadeEstoque() - 1); // mostr o estoque simulado
                         System.out.println("Produto alocado no carrinho!");
                     } else {
                         System.out.println("Item indisponível ou inexistente.");
@@ -63,7 +63,7 @@ public class Main {
                         Pedido novoPedido = new Pedido(numeroPedido++, cliente, c);
                         cliente.adicionarAoHistorico(novoPedido);
                         filaGeral.adicionarPedido(novoPedido);
-                        c.limparCarrinho(); // Esvazia o carrinho de compras atual
+                        c.limparCarrinho(); // lembrar q aq Esvazia o carrinho de compras atual
                         System.out.println("Transação autorizada com sucesso!");
                     }
                 }
@@ -90,7 +90,7 @@ public class Main {
                         catalogo.adicionarProduto(novo);
                         System.out.println("Novo item registrado globalmente com sucesso!");
                     } catch (ProdutoInvalidoException e) {
-                        System.out.println(e.getMessage()); // Exibe: "exception, a empresa não trabalha com esse produto"
+                        System.out.println(e.getMessage()); // me lembrar q o "exception, a empresa não trabalha com esse produto" é aqui q mostra
                     }
                 }
                 
