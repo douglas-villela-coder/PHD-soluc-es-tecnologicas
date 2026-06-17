@@ -4,14 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-// Exceção Customizada para regras de portfólio da PhD
+
 class ProdutoInvalidoException extends Exception {
     public ProdutoInvalidoException(String mensagem) {
         super(mensagem);
     }
 }
 
-// Classe Entidade com Encapsulamento Rígido
+
 class Produto {
     private int id;
     private String nome;
@@ -46,7 +46,6 @@ class Produto {
     }
 }
 
-// Agregação: Gerencia listas de compras locais de forma isolada
 class Carrinho {
     private final List<Produto> itens = new ArrayList<>();
 
@@ -68,7 +67,7 @@ class Carrinho {
     }
 }
 
-// Representa a Nota de Compra fechada
+// onde mostra a nota ttl da compr
 class Pedido {
     private int numeroPedido;
     private Cliente cliente;
@@ -91,7 +90,7 @@ class Pedido {
     }
 }
 
-// Catálogo com validações de nicho de mercado (Coleções Privadas)
+
 class Catalogo {
     private final List<Produto> produtos = new ArrayList<>();
     private final List<String> escopoValido = List.of("celular", "tablet", "computador", "som", "ia");
@@ -117,7 +116,7 @@ class Catalogo {
     }
 }
 
-// Fila sequencial de controle de saídas logísticas
+
 class Pedidos {
     private final Queue<Pedido> filaPedidos = new LinkedList<>();
 
